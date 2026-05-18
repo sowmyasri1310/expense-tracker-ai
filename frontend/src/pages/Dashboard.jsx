@@ -57,7 +57,7 @@ const Dashboard = () => {
         debts={activeDebts} 
       />
 
-      <div className="grid-cards" style={{ gridTemplateColumns: '1fr 1fr' }}>
+      <div className="grid-2col">
         <div className="card">
           <h2>Expense Analysis</h2>
           <ExpenseChart data={transactions} />

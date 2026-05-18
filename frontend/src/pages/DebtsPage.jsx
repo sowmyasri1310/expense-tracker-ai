@@ -63,7 +63,7 @@ const DebtsPage = () => {
 
   return (
     <div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '2rem' }}>
+      <div className="grid-sidebar-layout">
         <div className="card" style={{ alignSelf: 'start' }}>
           <h2 style={{ marginBottom: '1.5rem' }}>Add Debt / Loan</h2>
           <form onSubmit={handleSubmit}>

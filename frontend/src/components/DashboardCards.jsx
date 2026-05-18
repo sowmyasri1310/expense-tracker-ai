@@ -1,5 +1,5 @@
 import React from 'react';
-import { TrendingUp, TrendingDown, DollarSign, Users } from 'lucide-react';
+import { TrendingUp, TrendingDown, IndianRupee, Users } from 'lucide-react';
 
 const DashboardCards = ({ income, expense, balance, debts }) => {
   return (
@@ -7,7 +7,7 @@ const DashboardCards = ({ income, expense, balance, debts }) => {
       <div className="card">
         <div className="flex-between">
           <h3 style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.875rem', textTransform: 'uppercase' }}>Total Balance</h3>
-          <DollarSign size={20} color="var(--primary)" />
+          <IndianRupee size={20} color="var(--primary)" />
         </div>
         <p style={{ fontSize: '2rem', fontWeight: '700', color: 'var(--text-main)', margin: '0.5rem 0 0' }}>
           ₹{balance.toFixed(2)}
