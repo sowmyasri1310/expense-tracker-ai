@@ -12,8 +12,8 @@ const Dashboard = () => {
     const fetchData = async () => {
       try {
         const [txRes, debtsRes] = await Promise.all([
-          axios.get('http://localhost:5001/api/transactions'),
-          axios.get('http://localhost:5001/api/debts')
+          axios.get('/api/transactions'),
+          axios.get('/api/debts')
         ]);
         setTransactions(txRes.data);
         setDebts(debtsRes.data);

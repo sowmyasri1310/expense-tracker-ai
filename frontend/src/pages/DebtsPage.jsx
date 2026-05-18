@@ -18,7 +18,7 @@ const DebtsPage = () => {
 
   const fetchDebts = async () => {
     try {
-      const res = await axios.get('http://localhost:5001/api/debts');
+      const res = await axios.get('/api/debts');
       setDebts(res.data);
     } catch (err) {
       console.error(err);
@@ -33,7 +33,7 @@ const DebtsPage = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:5001/api/debts', formData);
+      const res = await axios.post('/api/debts', formData);
       setDebts([res.data, ...debts]);
       setFormData({ personName: '', amount: '', type: 'borrowed', description: '' });
     } catch (err) {
@@ -45,7 +45,7 @@ const DebtsPage = () => {
 
   const handleStatusChange = async (id, newStatus) => {
     try {
-      const res = await axios.put(`http://localhost:5001/api/debts/${id}`, { status: newStatus });
+      const res = await axios.put(`/api/debts/${id}`, { status: newStatus });
       setDebts(debts.map(d => d._id === id ? res.data : d));
     } catch (err) {
       console.error(err);
@@ -54,7 +54,7 @@ const DebtsPage = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5001/api/debts/${id}`);
+      await axios.delete(`/api/debts/${id}`);
       setDebts(debts.filter(d => d._id !== id));
     } catch (err) {
       console.error(err);

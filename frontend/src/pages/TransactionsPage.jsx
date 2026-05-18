@@ -15,7 +15,7 @@ const TransactionsPage = () => {
 
   const fetchTransactions = async () => {
     try {
-      const res = await axios.get('http://localhost:5001/api/transactions');
+      const res = await axios.get('/api/transactions');
       setTransactions(res.data);
     } catch (err) {
       console.error(err);
@@ -42,7 +42,7 @@ const TransactionsPage = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5001/api/transactions/${id}`);
+      await axios.delete(`/api/transactions/${id}`);
       setTransactions(transactions.filter(t => t._id !== id));
     } catch (err) {
       console.error(err);

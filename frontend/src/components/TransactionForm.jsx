@@ -54,10 +54,10 @@ const TransactionForm = ({ prefilledData, onTransactionAdded, editingTransaction
 
     try {
       if (editingTransaction) {
-        const response = await axios.put(`http://localhost:5001/api/transactions/${editingTransaction._id}`, formData);
+        const response = await axios.put(`/api/transactions/${editingTransaction._id}`, formData);
         onTransactionUpdated(response.data);
       } else {
-        const response = await axios.post('http://localhost:5001/api/transactions', formData);
+        const response = await axios.post('/api/transactions', formData);
         onTransactionAdded(response.data);
       }
       // Reset form

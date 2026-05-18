@@ -28,7 +28,7 @@ const OcrUpload = ({ onDataExtracted }) => {
     formData.append('invoice', file);
 
     try {
-      const response = await axios.post('http://localhost:5001/api/ocr', formData, {
+      const response = await axios.post('/api/ocr', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

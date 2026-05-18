@@ -31,9 +31,14 @@ app.get('/', (req, res) => {
   res.send('Expense Tracker API is running');
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-  if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === 'your_gemini_api_key_here') {
-    console.log("⚠️ GEMINI_API_KEY not set or is default. OCR will run in MOCK mode.");
-  }
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+    if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === 'your_gemini_api_key_here') {
+      console.log("⚠️ GEMINI_API_KEY not set or is default. OCR will run in MOCK mode.");
+    }
+  });
+}
+
+// Export the Express API for Vercel Serverless
+module.exports = app;

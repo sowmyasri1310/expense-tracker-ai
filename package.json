@@ -1,5 +1,7 @@
 {
-  "dependencies": {
-    "@google/genai": "^2.4.0"
+  "name": "expense-tracker-monorepo",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build"
   }
 }
