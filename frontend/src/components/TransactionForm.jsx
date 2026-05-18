@@ -11,35 +11,57 @@ const TransactionForm = ({ prefilledData, onTransactionAdded, editingTransaction
     category: 'General'
   });
 
+  const [customCategory, setCustomCategory] = useState('');
+  const [showCustomInput, setShowCustomInput] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const standardCategories = ['General', 'Food', 'Utilities', 'Shopping', 'Travel', 'Entertainment', 'Salary'];
 
   // Update form if prefilled data changes (e.g., from OCR)
   useEffect(() => {
     if (prefilledData) {
+      const isStandard = standardCategories.includes(prefilledData.category);
       setFormData(prev => ({
         ...prev,
         amount: prefilledData.amount || prev.amount,
         date: prefilledData.date || prev.date,
         time: prefilledData.time || prev.time,
         description: prefilledData.description || prev.description,
-        category: prefilledData.category || prev.category,
+        category: isStandard ? prefilledData.category : 'Other',
         type: 'expense' // Assumes invoices are expenses
       }));
+
+      if (!isStandard && prefilledData.category) {
+        setCustomCategory(prefilledData.category);
+        setShowCustomInput(true);
+      } else {
+        setCustomCategory('');
+        setShowCustomInput(false);
+      }
     }
   }, [prefilledData]);
 
   // Update form if editing a transaction
   useEffect(() => {
     if (editingTransaction) {
+      const isStandard = standardCategories.includes(editingTransaction.category);
       setFormData({
         type: editingTransaction.type,
         date: editingTransaction.date,
         time: editingTransaction.time || new Date().toTimeString().split(' ')[0].substring(0, 5),
         description: editingTransaction.description,
         amount: editingTransaction.amount,
-        category: editingTransaction.category
+        category: isStandard ? editingTransaction.category : 'Other'
       });
+
+      if (!isStandard && editingTransaction.category) {
+        setCustomCategory(editingTransaction.category);
+        setShowCustomInput(true);
+      } else {
+        setCustomCategory('');
+        setShowCustomInput(false);
+      }
     }
   }, [editingTransaction]);
 
@@ -47,17 +69,33 @@ const TransactionForm = ({ prefilledData, onTransactionAdded, editingTransaction
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleCategoryChange = (e) => {
+    const val = e.target.value;
+    setFormData(prev => ({ ...prev, category: val }));
+    if (val === 'Other') {
+      setShowCustomInput(true);
+    } else {
+      setShowCustomInput(false);
+      setCustomCategory('');
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
+    const submissionData = {
+      ...formData,
+      category: formData.category === 'Other' ? customCategory.trim() || 'Other' : formData.category
+    };
+
     try {
       if (editingTransaction) {
-        const response = await axios.put(`/api/transactions/${editingTransaction._id}`, formData);
+        const response = await axios.put(`/api/transactions/${editingTransaction._id}`, submissionData);
         onTransactionUpdated(response.data);
       } else {
-        const response = await axios.post('/api/transactions', formData);
+        const response = await axios.post('/api/transactions', submissionData);
         onTransactionAdded(response.data);
       }
       // Reset form
@@ -69,6 +107,8 @@ const TransactionForm = ({ prefilledData, onTransactionAdded, editingTransaction
         amount: '',
         category: 'General'
       });
+      setCustomCategory('');
+      setShowCustomInput(false);
       if (onCancelEdit) onCancelEdit();
     } catch (err) {
       setError(`Failed to ${editingTransaction ? 'update' : 'save'} transaction.`);
@@ -101,14 +141,34 @@ const TransactionForm = ({ prefilledData, onTransactionAdded, editingTransaction
         </div>
         <div className="form-group">
           <label>Category</label>
-          <input type="text" name="category" value={formData.category} onChange={handleChange} className="form-control" placeholder="e.g. Food, Salary" required />
+          <select name="category" value={formData.category} onChange={handleCategoryChange} className="form-control" required>
+            {standardCategories.map(cat => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
+            <option value="Other">Other (Custom)</option>
+          </select>
         </div>
       </div>
+
+      {showCustomInput && (
+        <div className="form-group">
+          <label>Custom Category Name</label>
+          <input 
+            type="text" 
+            value={customCategory} 
+            onChange={(e) => setCustomCategory(e.target.value)} 
+            className="form-control" 
+            placeholder="Enter custom category" 
+            required 
+          />
+        </div>
+      )}
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
         <div className="form-group">
           <label>Date</label>
-          <input type="date" name="date" value={formData.date} onChange={handleChange} className="form-control" required />
+          <input type="date" name="date" value={formData.date} onChange={handleChange} className="form-control" required>
+          </input>
         </div>
         <div className="form-group">
           <label>Time</label>

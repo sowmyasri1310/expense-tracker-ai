@@ -65,7 +65,9 @@ const TransactionsPage = () => {
         
         <div className="card">
           <h2>Transaction History</h2>
-          <div style={{ overflowX: 'auto' }}>
+          
+          {/* Desktop Table View */}
+          <div className="desktop-only" style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
               <thead>
                 <tr style={{ borderBottom: '2px solid var(--border)', color: 'var(--text-muted)' }}>
@@ -117,6 +119,48 @@ const TransactionsPage = () => {
               </tbody>
             </table>
           </div>
+
+          {/* Mobile Card List View */}
+          <div className="mobile-only">
+            {transactions.length === 0 && (
+              <p style={{ textAlign: 'center', padding: '1rem' }}>No transactions found.</p>
+            )}
+            {transactions.map(tx => (
+              <div key={tx._id} className="mobile-tx-card">
+                <div className="tx-header">
+                  <div>
+                    <strong style={{ display: 'block', fontSize: '1rem', marginBottom: '0.25rem' }}>{tx.description}</strong>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{tx.date} | {tx.time}</span>
+                  </div>
+                  <div style={{ fontWeight: '700', fontSize: '1.1rem', color: tx.type === 'income' ? 'var(--secondary)' : 'var(--danger)' }}>
+                    {tx.type === 'income' ? '+' : '-'}₹{tx.amount.toFixed(2)}
+                  </div>
+                </div>
+                <div className="tx-body">
+                  <span style={{ background: 'var(--background)', padding: '0.25rem 0.5rem', borderRadius: '4px', fontSize: '0.8rem' }}>
+                    {tx.category}
+                  </span>
+                </div>
+                <div className="tx-actions">
+                  <button 
+                    onClick={() => setEditingTx(tx)}
+                    className="btn btn-outline"
+                    style={{ padding: '0.4rem 0.8rem', borderColor: 'var(--primary)', color: 'var(--primary)', display: 'inline-flex', gap: '0.25rem', fontSize: '0.8rem' }}
+                  >
+                    <Edit2 size={14} /> Edit
+                  </button>
+                  <button 
+                    onClick={() => handleDelete(tx._id)}
+                    className="btn btn-outline text-danger"
+                    style={{ padding: '0.4rem 0.8rem', display: 'inline-flex', gap: '0.25rem', fontSize: '0.8rem' }}
+                  >
+                    <Trash2 size={14} /> Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
         </div>
       </div>
     </div>

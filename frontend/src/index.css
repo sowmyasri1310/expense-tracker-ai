@@ -291,4 +291,56 @@ p { color: var(--text-muted); margin-bottom: 1rem; }
   }
 }
 
+/* Responsive display utilities */
+.desktop-only {
+  display: block;
+}
+
+.mobile-only {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none !important;
+  }
+  
+  .mobile-only {
+    display: block !important;
+  }
+}
+
+/* Mobile transaction card styles */
+.mobile-tx-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow);
+}
+
+.mobile-tx-card .tx-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.mobile-tx-card .tx-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mobile-tx-card .tx-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  border-top: 1px solid var(--border);
+  padding-top: 0.5rem;
+  justify-content: flex-end;
+}
+
+
 
