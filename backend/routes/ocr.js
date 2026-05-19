@@ -2,6 +2,30 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const { GoogleGenAI } = require('@google/genai');
+const { traceable } = require('langsmith/traceable');
+
+// Wrap the Gemini generation call in a traceable function
+const runGeminiOcr = traceable(async (base64Image, mimeType, prompt) => {
+  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+  
+  const response = await ai.models.generateContent({
+    model: 'gemini-2.5-flash',
+    contents: [
+      {
+        role: 'user',
+        parts: [
+          { inlineData: { data: base64Image, mimeType: mimeType } },
+          { text: prompt }
+        ]
+      }
+    ],
+    config: {
+      temperature: 0.1,
+    }
+  });
+
+  return response;
+}, { name: "Gemini OCR Extraction", run_type: "llm" });
 
 // Configure multer for in-memory file upload
 const storage = multer.memoryStorage();
@@ -31,8 +55,6 @@ router.post('/', upload.single('invoice'), async (req, res) => {
   }
 
   try {
-    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-    
     // Convert buffer to base64 for Gemini API
     const base64Image = req.file.buffer.toString('base64');
     
@@ -49,21 +71,7 @@ router.post('/', upload.single('invoice'), async (req, res) => {
       }
     `;
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: [
-        {
-          role: 'user',
-          parts: [
-            { inlineData: { data: base64Image, mimeType: req.file.mimetype } },
-            { text: prompt }
-          ]
-        }
-      ],
-      config: {
-          temperature: 0.1,
-      }
-    });
+    const response = await runGeminiOcr(base64Image, req.file.mimetype, prompt);
 
     const responseText = response.text;
     
